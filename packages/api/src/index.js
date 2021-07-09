@@ -20,6 +20,9 @@ router.delete('/user/tokens/:id', withCorsHeaders(withAuth(userTokensDelete)))
 router.get('/user/uploads', withCorsHeaders(withAuth(userUploadsGet)))
 router.delete('/user/uploads/:id', withCorsHeaders(withAuth(userUploadsDelete)))
 
+// Monitoring
+router.get('/metrics', withCorsHeaders(metricsGet))
+
 router.get('/', () => {
   return new Response(
     `
