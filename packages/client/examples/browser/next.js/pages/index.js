@@ -1,12 +1,13 @@
 import React, { useState, useReducer } from 'react'
 import { Web3Storage } from 'web3.storage'
 
-export default function Home () {
+export default function Home() {
   const [messages, showMessage] = useReducer((msgs, m) => msgs.concat(m), [])
-  const [token, setToken] = useState('')
+  // const [token, setToken] = useState('')
   const [files, setFiles] = useState([])
+  const token = process.env.API_KEY
 
-  async function handleSubmit (event) {
+  async function handleSubmit(event) {
     // don't reload the page!
     event.preventDefault()
 
@@ -33,7 +34,7 @@ export default function Home () {
     showMessage(`> ⁂ ${totalBytes.toLocaleString()} bytes stored!`)
   }
 
-  function showLink (url) {
+  function showLink(url) {
     showMessage(<span>&gt; 🔗 <a href={url}>{url}</a></span>)
   }
 
@@ -45,8 +46,8 @@ export default function Home () {
         </h1>
       </header>
       <form id='upload-form' onSubmit={handleSubmit}>
-        <label htmlFor='token'>Paste your web3.storage API token here</label>
-        <input type='text' id='token' onChange={e => setToken(e.target.value)} required />
+        {/* <label htmlFor='token'>Paste your web3.storage API token here</label>
+        <input type='text' id='token' onChange={e => setToken(e.target.value)} required /> */}
         <label htmlFor='filepicker'>Pick files to store</label>
         <input type='file' id='filepicker' name='fileList' onChange={e => setFiles(e.target.files)} multiple required />
         <input type='submit' value='Submit' id='submit' />
