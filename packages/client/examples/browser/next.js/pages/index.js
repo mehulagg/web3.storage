@@ -3,7 +3,7 @@ import { Web3Storage } from 'web3.storage'
 
 export default function Home() {
   const [messages, showMessage] = useReducer((msgs, m) => msgs.concat(m), [])
-  // const [token, setToken] = useState('')
+  const [uploadName, setName] = useState('')
   const [files, setFiles] = useState([])
   const token = process.env.NEXT_PUBLIC_API_KEY
 
@@ -20,7 +20,8 @@ export default function Home() {
         showMessage(`> 🔑 locally calculated Content ID: ${localCid} `)
         showMessage('> 📡 sending files to web3.storage ')
       },
-      onStoredChunk: bytes => showMessage(`> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`)
+      onStoredChunk: bytes => showMessage(`> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`),
+      name: uploadName
     })
     showMessage(`> ✅ web3.storage now hosting ${cid}`)
     showLink(`https://dweb.link/ipfs/${cid}`)
@@ -46,8 +47,8 @@ export default function Home() {
         </h1>
       </header>
       <form id='upload-form' onSubmit={handleSubmit}>
-        {/* <label htmlFor='token'>Paste your web3.storage API token here</label>
-        <input type='text' id='token' onChange={e => setToken(e.target.value)} required /> */}
+        <label htmlFor='uploadName'>Name of your upload</label>
+        <input type='text' id='uploadName' onChange={e => setName(e.target.value)} />
         <label htmlFor='filepicker'>Pick files to store</label>
         <input type='file' id='filepicker' name='fileList' onChange={e => setFiles(e.target.files)} multiple required />
         <input type='submit' value='Submit' id='submit' />
