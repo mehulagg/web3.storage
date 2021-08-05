@@ -5,7 +5,7 @@ export default function Home() {
   const [messages, showMessage] = useReducer((msgs, m) => msgs.concat(m), [])
   // const [token, setToken] = useState('')
   const [files, setFiles] = useState([])
-  const token = process.env.API_KEY
+  const token = process.env.NEXT_PUBLIC_API_KEY
 
   async function handleSubmit(event) {
     // don't reload the page!
