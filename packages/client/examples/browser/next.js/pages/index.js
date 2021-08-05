@@ -50,7 +50,9 @@ export default function Home() {
         <label htmlFor='uploadName'>Name of your upload</label>
         <input type='text' id='uploadName' onChange={e => setName(e.target.value)} />
         <label htmlFor='filepicker'>Pick files to store</label>
-        <input type='file' id='filepicker' name='fileList' onChange={e => setFiles(e.target.files)} multiple required />
+        <input type='file' id='filepicker' name='fileList' onChange={e => setFiles(e.target.files)} multiple />
+        <label htmlFor='folderpicker'>Pick folder to store</label>
+        <input type='file' id='folderpicker' name='folderList' onChange={e => setFiles(e.target.files)} multiple webkitdirectory='true' />
         <input type='submit' value='Submit' id='submit' />
       </form>
       <div id='output'>
