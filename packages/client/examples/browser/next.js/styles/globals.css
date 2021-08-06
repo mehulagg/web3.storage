@@ -11,6 +11,7 @@ form {
   display: block;
   margin: 0 auto;
   color:#333;
+  overflow-y: scroll
 }
 label {
   display: block;
