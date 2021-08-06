@@ -6,13 +6,14 @@ export default function Home() {
   const [uploadName, setName] = useState('')
   const [files, setFiles] = useState([])
   const token = process.env.NEXT_PUBLIC_API_KEY
+  const endpoint = new URL("https://api-staging.web3.storage")
 
   async function handleSubmit(event) {
     // don't reload the page!
     event.preventDefault()
 
     showMessage('> 📦 creating web3.storage client')
-    const client = new Web3Storage({ token })
+    const client = new Web3Storage({ token, endpoint })
 
     showMessage('> 🤖 chunking and hashing the files (in your browser!) to calculate the Content ID')
     const cid = await client.put(files, {
