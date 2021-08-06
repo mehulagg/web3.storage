@@ -27,13 +27,13 @@ export default function Home() {
     showMessage(`> ✅ web3.storage now hosting ${cid}`)
     showLink(`https://dweb.link/ipfs/${cid}`)
 
-    showMessage('> 📡 fetching the list of all unique uploads on this account')
-    let totalBytes = 0
-    for await (const upload of client.list()) {
-      showMessage(`> 📄 ${upload.cid}  ${upload.name}`)
-      totalBytes += upload.dagSize || 0
-    }
-    showMessage(`> ⁂ ${totalBytes.toLocaleString()} bytes stored!`)
+//     showMessage('> 📡 fetching the list of all unique uploads on this account')
+//     let totalBytes = 0
+//     for await (const upload of client.list()) {
+//       showMessage(`> 📄 ${upload.cid}  ${upload.name}`)
+//       totalBytes += upload.dagSize || 0
+//     }
+//     showMessage(`> ⁂ ${totalBytes.toLocaleString()} bytes stored!`)
   }
 
   function showLink(url) {
