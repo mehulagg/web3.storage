@@ -1,4 +1,4 @@
-import { Web3Storage, filesFromPath } from 'web3.storage'
+import { Web3Storage, filesFromPath } from '@mehulagg/web3.storage'
 import { writeFiles } from 'ipfs-car/unpack/fs'
 import enquirer from 'enquirer'
 import Conf from 'conf'
@@ -141,7 +141,7 @@ export async function list (opts = {}) {
  * @param {string} [opts.wrap] wrap with directory
  * @param {string[]} opts._ additonal paths to add
  */
-export async function put (path, opts) {
+export async function put(path, opts) {
   const client = getClient(opts)
   const spinner = ora('Packing files').start()
   const paths = [path, ...opts._]
@@ -157,6 +157,7 @@ export async function put (path, opts) {
   }
   let rootCid = ''
   const root = await client.put(files, {
+    name: 'Uploaded by w3',
     wrapWithDirectory: opts.wrap,
     onRootCidReady: (cid) => {
       rootCid = cid

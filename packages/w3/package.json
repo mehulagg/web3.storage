@@ -1,6 +1,6 @@
 {
-  "name": "@web3-storage/w3",
-  "version": "2.1.0",
+  "name": "@mehulagg/w3",
+  "version": "2.0.3",
   "description": "The CLI to save your things in web3.storage ⁂",
   "type": "module",
   "bin": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/web3-storage/web3.storage.git",
+    "url": "git+https://github.com/mehulagg/web3.storage.git",
     "directory": "packages/w3"
   },
   "author": "",
@@ -28,7 +28,7 @@
     "ipfs-car": "^0.5.3",
     "ora": "^5.4.1",
     "sade": "^1.7.4",
-    "web3.storage": "^3.0.0"
+    "@mehulagg/web3.storage": "^3.1.3"
   },
   "devDependencies": {
     "execa": "^5.1.1",
