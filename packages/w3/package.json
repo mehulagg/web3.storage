@@ -1,6 +1,6 @@
 {
   "name": "@mehulagg/w3",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "The CLI to save your things in web3.storage ⁂",
   "type": "module",
   "bin": {
@@ -28,7 +28,7 @@
     "ipfs-car": "^0.5.3",
     "ora": "^5.4.1",
     "sade": "^1.7.4",
-    "@mehulagg/web3.storage": "^3.2.0",
+    "@mehulagg/web3.storage": "^3.2.0"
   },
   "devDependencies": {
     "execa": "^5.1.1",
