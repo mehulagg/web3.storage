@@ -25,7 +25,7 @@ cli.command('put <path>')
   .action(put)
 
 cli.command('put-car <path>')
-  .describe('Upload a car file to web3.storage')
+  .describe('Upload a CAR file to web3.storage')
   .option('-n, --name', 'Name to identify the upload')
   .option('--no-retry', 'Dont try the upload again if it fails')
   .action(putCar)
