@@ -29,7 +29,7 @@ import {
 } from './platform.js'
 
 const MAX_PUT_RETRIES = 5
-const MAX_CONCURRENT_UPLOADS = 5
+const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 50 // chunk to ~50MB CARs
 
 /** @typedef { import('./lib/interface.js').API } API */
@@ -187,7 +187,7 @@ class Web3Storage {
     }
 
     const upload = transform(MAX_CONCURRENT_UPLOADS, onCarChunk)
-    for await (const _ of upload(splitter.cars())) {} // eslint-disable-line
+    for await (const _ of upload(splitter.cars())) { } // eslint-disable-line
     return carRoot
   }
 
@@ -244,11 +244,11 @@ class Web3Storage {
    * @returns {AsyncIterable<Upload>}
    */
   static async * list (service, { before = new Date().toISOString(), maxResults = Infinity } = {}) {
-  /**
-   * @param {Service} service
-   * @param {{before: string, size: number}} opts
-   * @returns {Promise<Response>}
-   */
+    /**
+     * @param {Service} service
+     * @param {{before: string, size: number}} opts
+     * @returns {Promise<Response>}
+     */
     function listPage ({ endpoint, token }, { before, size }) {
       const search = new URLSearchParams({ before, size: size.toString() })
       const url = new URL(`/user/uploads?${search}`, endpoint)
