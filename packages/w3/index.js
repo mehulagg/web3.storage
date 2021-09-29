@@ -178,7 +178,7 @@ export async function put (firstPath, opts) {
       rootCid = cid
       spinner.stopAndPersist({ symbol: '#', text: `Packed ${files.length} file${files.length === 1 ? '' : 's'} (${filesize(totalSize)})` })
       console.log(`# ${rootCid}`)
-      if (totalSize > 1024 * 1024 * 10) {
+      if (totalSize > 1024 * 1024 * 30) {
         spinner.start('Chunking')
       } else {
         spinner.start('Storing')
@@ -227,7 +227,7 @@ export async function putCar (firstPath, opts) {
   const stats = fs.statSync(firstPath)
   spinner.stopAndPersist({ symbol: '#', text: roots[0].toString() })
   const totalSize = stats.size
-  if (totalSize > 1024 * 1024 * 10) {
+  if (totalSize > 1024 * 1024 * 30) {
     spinner.start('Chunking')
   } else {
     spinner.start('Storing')
