@@ -1,5 +1,33 @@
 # Changelog
 
+### [2.3.1](https://www.github.com/web3-storage/web3.storage/compare/db-v2.3.0...db-v2.3.1) (2021-09-28)
+
+
+### Bug Fixes
+
+* increment used storage ([#501](https://www.github.com/web3-storage/web3.storage/issues/501)) ([1becd09](https://www.github.com/web3-storage/web3.storage/commit/1becd09bbdaabc503c180cc38c37f7f03852fe62))
+
+## [2.3.0](https://www.github.com/web3-storage/web3.storage/compare/db-v2.2.0...db-v2.3.0) (2021-09-27)
+
+
+### Features
+
+* storage backup ([#417](https://www.github.com/web3-storage/web3.storage/issues/417)) ([ae5423a](https://www.github.com/web3-storage/web3.storage/commit/ae5423aebc779545126fb6ba652637317efc91e7))
+
+
+### Bug Fixes
+
+* chunked backup creation ([#496](https://www.github.com/web3-storage/web3.storage/issues/496)) ([4c8cf17](https://www.github.com/web3-storage/web3.storage/commit/4c8cf173deb21cbf0debf40901bfd2e7207c2026))
+* upload type in upload enum for db ([#490](https://www.github.com/web3-storage/web3.storage/issues/490)) ([ed8f089](https://www.github.com/web3-storage/web3.storage/commit/ed8f0897082160015a0fa7a23ac0ec55bd78bceb))
+
+## [2.2.0](https://www.github.com/web3-storage/web3.storage/compare/db-v2.1.0...db-v2.2.0) (2021-09-06)
+
+
+### Features
+
+* allow uploads to be renamed ([2cd9483](https://www.github.com/web3-storage/web3.storage/commit/2cd9483734df5e558a79f58701002f2c50c94269))
+* api supports upload list sorting ([#373](https://www.github.com/web3-storage/web3.storage/issues/373)) ([7b0ec3b](https://www.github.com/web3-storage/web3.storage/commit/7b0ec3beea3aa9b596a794441267d7b8bfcbb7b6))
+
 ## [2.1.0](https://www.github.com/web3-storage/web3.storage/compare/db-v2.0.3...db-v2.1.0) (2021-08-24)
 
 

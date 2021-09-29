@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/web3-storage/web3.storage/compare/website-v1.3.1...website-v1.4.0) (2021-09-10)
+
+
+### Features
+
+* add a new step to the getting started ([#391](https://www.github.com/web3-storage/web3.storage/issues/391)) ([03844f4](https://www.github.com/web3-storage/web3.storage/commit/03844f456a3faafc755d3342ae6a2fc67822b1e2))
+
+
+### Bug Fixes
+
+* use the same font size for the whole footer ([#461](https://www.github.com/web3-storage/web3.storage/issues/461)) ([91b054a](https://www.github.com/web3-storage/web3.storage/commit/91b054a30070d0db11477a0397af40ad42f2bda9))
+
+### [1.3.1](https://www.github.com/web3-storage/web3.storage/compare/website-v1.3.0...website-v1.3.1) (2021-09-09)
+
+
+### Bug Fixes
+
+* improve table layout inside files page ([#454](https://www.github.com/web3-storage/web3.storage/issues/454)) ([e591487](https://www.github.com/web3-storage/web3.storage/commit/e5914878bdbb200b7cb6903555ad35363db4fdbb)), closes [#430](https://www.github.com/web3-storage/web3.storage/issues/430) [#431](https://www.github.com/web3-storage/web3.storage/issues/431)
+* make refresh fetch recent uploads ([#423](https://www.github.com/web3-storage/web3.storage/issues/423)) ([d8c9245](https://www.github.com/web3-storage/web3.storage/commit/d8c9245e8ed6cb98d5dfaf4a0d8ffd2edd87994b))
+
+## [1.3.0](https://www.github.com/web3-storage/web3.storage/compare/website-v1.2.4...website-v1.3.0) (2021-09-06)
+
+
+### Features
+
+* add navbar mobile functionalities ([#251](https://www.github.com/web3-storage/web3.storage/issues/251)) ([e6b5322](https://www.github.com/web3-storage/web3.storage/commit/e6b5322d9d7e398558d3737641563f03f10150b7))
+* add sorting to the uploads list ([d09f2aa](https://www.github.com/web3-storage/web3.storage/commit/d09f2aa34833cc20af8e19923a80e39060190bad))
+* allow uploads to be renamed ([2cd9483](https://www.github.com/web3-storage/web3.storage/commit/2cd9483734df5e558a79f58701002f2c50c94269))
+
+
+### Bug Fixes
+
+* add jsdocs to the uploads fetching ([5964ff2](https://www.github.com/web3-storage/web3.storage/commit/5964ff267b8558447a98172cb34331bd665c5ee3))
+* button size on the tokens page ([a2c76b3](https://www.github.com/web3-storage/web3.storage/commit/a2c76b312a5a9844c64a02cc56760b94ba4d87e1))
+* logo text style ([e3b64b1](https://www.github.com/web3-storage/web3.storage/commit/e3b64b143bfc5dff00bf9348484aefae4deb17ac))
+* logo text style ([47f190d](https://www.github.com/web3-storage/web3.storage/commit/47f190d0213a92a85916ea2a10443803b7cc5148))
+* remove double spinners for the account page ([#354](https://www.github.com/web3-storage/web3.storage/issues/354)) ([de966e2](https://www.github.com/web3-storage/web3.storage/commit/de966e265df4354e89675178a3a7fd42a7e14a1a))
+* tslint errors ([c450553](https://www.github.com/web3-storage/web3.storage/commit/c450553ea14613b5654b3623ff61352b31960aa1))
+
 ### [1.2.4](https://www.github.com/web3-storage/web3.storage/compare/website-v1.2.3...website-v1.2.4) (2021-08-16)
 
 
