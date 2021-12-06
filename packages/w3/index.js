@@ -227,7 +227,7 @@ export async function putCar (firstPath, opts) {
   const stats = fs.statSync(firstPath)
   spinner.stopAndPersist({ symbol: '#', text: roots[0].toString() })
   const totalSize = stats.size
-  if (totalSize > 1024 * 1024 * 30) {
+  if (totalSize > 1024 * 1024 * 10) {
     spinner.start('Chunking')
   } else {
     spinner.start('Storing')
