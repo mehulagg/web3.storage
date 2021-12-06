@@ -1,13 +1,7 @@
 /* global describe it fetch Blob FormData */
 import assert from 'assert'
 import { endpoint } from './scripts/constants.js'
-import * as JWT from '../src/utils/jwt.js'
-import { SALT } from './scripts/worker-globals.js'
-import { JWT_ISSUER } from '../src/constants.js'
-
-function getTestJWT (sub = 'test', name = 'test') {
-  return JWT.sign({ sub, iss: JWT_ISSUER, iat: Date.now(), name }, SALT)
-}
+import { getTestJWT } from './scripts/helpers.js'
 
 describe('POST /upload', () => {
   it('should add posted File to Cluster', async () => {
@@ -64,5 +58,25 @@ describe('POST /upload', () => {
     const { cid } = await res.json()
     assert(cid, 'Server response payload has `cid` property')
     assert.strictEqual(cid, expectedCid, 'Server responded with expected CID')
+  })
+
+  it('should decode filename from header', async () => {
+    const expectedName = 'filename–with–funky–chars'
+
+    // Create token
+    const token = await getTestJWT()
+
+    const res = await fetch(new URL('upload', endpoint), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Name': encodeURIComponent(expectedName)
+      },
+      body: new Blob(['hello world!'])
+    })
+
+    assert(res, 'Server responded')
+    // db mock throws 500 if filename was not decoded
+    assert(res.ok, 'Server response not ok: filename might not have been decoded.')
   })
 })

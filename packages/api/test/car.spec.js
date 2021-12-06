@@ -6,14 +6,9 @@ import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
 
 import { endpoint } from './scripts/constants.js'
-import * as JWT from '../src/utils/jwt.js'
-import { SALT } from './scripts/worker-globals.js'
 import { createCar } from './scripts/car.js'
-import { JWT_ISSUER, MAX_BLOCK_SIZE } from '../src/constants.js'
-
-function getTestJWT (sub = 'test', name = 'test') {
-  return JWT.sign({ sub, iss: JWT_ISSUER, iat: Date.now(), name }, SALT)
-}
+import { MAX_BLOCK_SIZE } from '../src/constants.js'
+import { getTestJWT } from './scripts/helpers.js'
 
 describe('POST /car', () => {
   it('should add posted CARs to Cluster', async () => {

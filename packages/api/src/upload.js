@@ -4,6 +4,9 @@ import { handleCarUpload } from './car.js'
 import { toFormData } from './utils/form-data.js'
 import { HTTPError } from './errors.js'
 
+const MAX_CHUNK_SIZE = 1048576
+const MAX_CHILDREN_PER_NODE = 1024
+
 /**
  * Post a File/Directory.
  *
@@ -14,11 +17,6 @@ import { HTTPError } from './errors.js'
 export async function uploadPost (request, env, ctx) {
   const { headers } = request
   const contentType = headers.get('content-type') || ''
-
-  let name = headers.get('x-name')
-  if (!name || typeof name !== 'string') {
-    name = `Upload at ${new Date().toISOString()}`
-  }
 
   let input
   if (contentType.includes('multipart/form-data')) {
@@ -41,8 +39,8 @@ export async function uploadPost (request, env, ctx) {
   // this path used to send the files to cluster and we didn't wrap, so we dont here for consistency with the old ways.
   const { car } = await packToBlob({
     input,
-    maxChunkSize: 1048576,
-    maxChildrenPerNode: 1024,
+    maxChunkSize: MAX_CHUNK_SIZE,
+    maxChildrenPerNode: MAX_CHILDREN_PER_NODE,
     wrapWithDirectory: false
   })
 

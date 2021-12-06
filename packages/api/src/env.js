@@ -1,10 +1,12 @@
-/* global MAGIC_SECRET_KEY FAUNA_ENDPOINT FAUNA_KEY SALT CLUSTER_BASIC_AUTH_TOKEN CLUSTER_API_URL SENTRY_DSN, VERSION DANGEROUSLY_BYPASS_MAGIC_AUTH S3_BUCKET_ENDPOINT S3_BUCKET_NAME S3_BUCKET_REGION S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY_ID */
+/* global MAGIC_SECRET_KEY SALT CLUSTER_BASIC_AUTH_TOKEN CLUSTER_API_URL SENTRY_DSN SENTRY_RELEASE DANGEROUSLY_BYPASS_MAGIC_AUTH PG_REST_URL PG_REST_JWT */
+/* global S3_BUCKET_ENDPOINT S3_BUCKET_NAME S3_BUCKET_REGION S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY_ID ENV MAINTENANCE_MODE VERSION COMMITHASH BRANCH */
 import Toucan from 'toucan-js'
-import { S3Client } from '@aws-sdk/client-s3'
+import { S3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
 import { Magic } from '@magic-sdk/admin'
 import { DBClient } from '@web3-storage/db'
 import { Cluster } from '@nftstorage/ipfs-cluster'
 
+import { DEFAULT_MODE } from './maintenance.js'
 import pkg from '../package.json'
 
 /**
@@ -13,6 +15,7 @@ import pkg from '../package.json'
  * @property {Magic} magic
  * @property {DBClient} db
  * @property {string} SALT
+ * @property {import('./maintenance').Mode} MODE
  * @property {S3Client} [s3Client]
  * @property {string} [s3BucketName]
  * @property {string} [s3BucketRegion]
@@ -26,19 +29,16 @@ import pkg from '../package.json'
 export function envAll (_, env, event) {
   env.sentry = (env.SENTRY_DSN || typeof SENTRY_DSN !== 'undefined') && new Toucan({
     dsn: env.SENTRY_DSN || SENTRY_DSN,
-    event,
-    allowedHeaders: ['user-agent'],
+    context: event,
+    allowedHeaders: ['user-agent', 'x-client'],
     allowedSearchParams: /(.*)/,
     debug: false,
     rewriteFrames: {
       root: '/'
     },
-    version: env.VERSION || VERSION,
-    pkg: {
-      ...pkg,
-      // sentry cannot deal with "/" in version
-      name: pkg.name.replace('@web3-storage/', '')
-    }
+    environment: env.ENV || ENV,
+    release: env.SENTRY_RELEASE || SENTRY_RELEASE,
+    pkg
   })
   env.magic = new Magic(env.MAGIC_SECRET_KEY || MAGIC_SECRET_KEY)
 
@@ -50,18 +50,22 @@ export function envAll (_, env, event) {
   }
 
   env.db = new DBClient({
-    endpoint: env.FAUNA_ENDPOINT || (typeof FAUNA_ENDPOINT === 'undefined' ? undefined : FAUNA_ENDPOINT),
-    token: env.FAUNA_KEY || FAUNA_KEY
+    endpoint: env.PG_REST_URL || PG_REST_URL,
+    token: env.PG_REST_JWT || PG_REST_JWT
   })
 
   env.SALT = env.SALT || SALT
+  env.MODE = env.MAINTENANCE_MODE || (typeof MAINTENANCE_MODE === 'undefined' ? DEFAULT_MODE : MAINTENANCE_MODE)
+  env.VERSION = env.VERSION || VERSION
+  env.COMMITHASH = env.COMMITHASH || COMMITHASH
+  env.BRANCH = env.BRANCH || BRANCH
 
   const clusterAuthToken = env.CLUSTER_BASIC_AUTH_TOKEN || (typeof CLUSTER_BASIC_AUTH_TOKEN === 'undefined' ? undefined : CLUSTER_BASIC_AUTH_TOKEN)
   const headers = clusterAuthToken ? { Authorization: `Basic ${clusterAuthToken}` } : {}
   env.cluster = new Cluster(env.CLUSTER_API_URL || CLUSTER_API_URL, { headers })
 
   // backups not required in dev mode
-  if (env.ENV === 'dev' && !(env.S3_ACCESS_KEY_ID || typeof S3_ACCESS_KEY_ID !== 'undefined')) {
+  if ((env.ENV === 'dev' || ENV === 'dev') && !(env.S3_ACCESS_KEY_ID || typeof S3_ACCESS_KEY_ID !== 'undefined')) {
     console.log('running without backups wired up')
   } else {
     const s3Endpoint = env.S3_BUCKET_ENDPOINT || (typeof S3_BUCKET_ENDPOINT === 'undefined' ? undefined : S3_BUCKET_ENDPOINT)

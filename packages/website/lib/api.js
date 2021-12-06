@@ -1,6 +1,8 @@
 import { getMagic } from './magic'
 import constants from './constants'
 
+/** @typedef {{ name?: string } & import('web3.storage').Upload} Upload */
+
 export const API = constants.API
 
 const LIFESPAN = constants.MAGIC_TOKEN_LIFESPAN / 1000
@@ -45,6 +47,22 @@ export async function getStorage() {
 
   if (!res.ok) {
     throw new Error(`failed to get storage info: ${await res.text()}`)
+  }
+
+  return res.json()
+}
+
+export async function getInfo() {
+  const res = await fetch(API + '/user/info', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + (await getToken()),
+    },
+  })
+
+  if (!res.ok) {
+    throw new Error(`failed to get user info: ${await res.text()}`)
   }
 
   return res.json()
@@ -165,5 +183,21 @@ export async function deleteUpload (cid) {
 
   if (!res.ok) {
     throw new Error(`failed to delete upload: ${await res.text()}`)
+  }
+}
+
+export async function getVersion() {
+  const route = '/version'
+  const res = await fetch(`${API}${route}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (res.ok) {
+    return await res.json()
+  } else {
+    throw new Error(await res.text())
   }
 }

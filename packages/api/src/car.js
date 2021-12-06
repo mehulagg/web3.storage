@@ -1,6 +1,5 @@
 /* eslint-env serviceworker */
-import { gql } from '@web3-storage/db'
-import { PutObjectCommand } from '@aws-sdk/client-s3'
+import { PutObjectCommand } from '@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js'
 import { CarBlockIterator } from '@ipld/car'
 import { toString } from 'uint8arrays'
 import { Block } from 'multiformats/block'
@@ -12,31 +11,13 @@ import retry from 'p-retry'
 import { GATEWAY, LOCAL_ADD_THRESHOLD, MAX_BLOCK_SIZE } from './constants.js'
 import { JSONResponse } from './utils/json-response.js'
 import { toPinStatusEnum } from './utils/pin.js'
+import { normalizeCid } from './utils/normalize-cid.js'
 
 /**
  * @typedef {import('multiformats/cid').CID} CID
  */
 
 const decoders = [pb, raw, cbor]
-
-const CREATE_UPLOAD = gql`
-  mutation CreateUpload($data: CreateUploadInput!) {
-    createUpload(data: $data) {
-      content {
-        _id
-        dagSize
-      }
-    }
-  }
-`
-
-const CREATE_OR_UPDATE_PIN = gql`
-  mutation CreateOrUpdatePin($data: CreateOrUpdatePinInput!) {
-    createOrUpdatePin(data: $data) {
-      _id
-    }
-  }
-`
 
 // Duration between status check polls in ms.
 const PIN_STATUS_CHECK_INTERVAL = 5000
@@ -149,28 +130,29 @@ export async function handleCarUpload (request, env, ctx, car, uploadType = 'Car
     backup(car, rootCid, user._id, env)
   ])
 
-  let name = headers.get('x-name')
+  const xName = headers.get('x-name')
+  let name = xName && decodeURIComponent(xName)
   if (!name || typeof name !== 'string') {
     name = `Upload at ${new Date().toISOString()}`
   }
 
+  const normalizedCid = normalizeCid(cid)
   // Store in DB
   // Retried because it's possible to receive the error:
   // "Transaction was aborted due to detection of concurrent modification."
-  const { createUpload: upload } = await retry(() => (
-    env.db.query(CREATE_UPLOAD, {
-      data: {
-        user: user._id,
-        authToken: authToken?._id,
-        cid,
-        name,
-        type: uploadType,
-        backupUrls: backupKey
-          ? [`https://${env.s3BucketName}.s3.${env.s3BucketRegion}.amazonaws.com/${backupKey}`]
-          : [],
-        pins,
-        dagSize
-      }
+  await retry(() => (
+    env.db.createUpload({
+      user: user._id,
+      authKey: authToken?._id,
+      contentCid: normalizedCid,
+      sourceCid: cid,
+      name,
+      type: uploadType,
+      backupUrls: backupKey
+        ? [`https://${env.s3BucketName}.s3.${env.s3BucketRegion}.amazonaws.com/${backupKey}`]
+        : [],
+      pins,
+      dagSize
     })
   ), {
     retries: CREATE_UPLOAD_RETRIES,
@@ -198,9 +180,7 @@ export async function handleCarUpload (request, env, ctx, car, uploadType = 'Car
         if (!okPins.length) continue
 
         for (const pin of okPins) {
-          await env.db.query(CREATE_OR_UPDATE_PIN, {
-            data: { content: upload.content._id, ...pin }
-          })
+          await env.db.upsertPin(normalizedCid, pin)
         }
         return
       }

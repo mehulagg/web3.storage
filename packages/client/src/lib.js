@@ -83,7 +83,7 @@ class Web3Storage {
     if (!token) throw new Error('missing token')
     return {
       Authorization: `Bearer ${token}`,
-      'X-Client': 'web3.storage'
+      'X-Client': 'web3.storage/js'
     }
   }
 
@@ -133,11 +133,11 @@ class Web3Storage {
     decoders
   } = {}) {
     const targetSize = MAX_CHUNK_SIZE
-    const url = new URL('/car', endpoint)
+    const url = new URL('car', endpoint)
     let headers = Web3Storage.headers(token)
 
     if (name) {
-      headers = { ...headers, 'X-Name': name }
+      headers = { ...headers, 'X-Name': encodeURIComponent(name) }
     }
 
     const roots = await car.getRoots()
@@ -197,7 +197,7 @@ class Web3Storage {
    * @returns {Promise<Web3Response | null>}
    */
   static async get ({ endpoint, token }, cid) {
-    const url = new URL(`/car/${cid}`, endpoint)
+    const url = new URL(`car/${cid}`, endpoint)
     const res = await fetch(url.toString(), {
       method: 'GET',
       headers: Web3Storage.headers(token)
@@ -222,7 +222,7 @@ class Web3Storage {
    * @returns {Promise<Status | undefined>}
    */
   static async status ({ endpoint, token }, cid) {
-    const url = new URL(`/status/${cid}`, endpoint)
+    const url = new URL(`status/${cid}`, endpoint)
     const res = await fetch(url.toString(), {
       method: 'GET',
       headers: Web3Storage.headers(token)
@@ -251,7 +251,7 @@ class Web3Storage {
      */
     function listPage ({ endpoint, token }, { before, size }) {
       const search = new URLSearchParams({ before, size: size.toString() })
-      const url = new URL(`/user/uploads?${search}`, endpoint)
+      const url = new URL(`user/uploads?${search}`, endpoint)
       return fetch(url.toString(), {
         method: 'GET',
         headers: {
@@ -264,7 +264,9 @@ class Web3Storage {
     const size = maxResults > 100 ? 100 : maxResults
     for await (const res of paginator(listPage, service, { before, size })) {
       if (!res.ok) {
-        throw new Error(`${res.status} ${res.statusText}`)
+        /* c8 ignore next 2 */
+        const errorMessage = await res.json()
+        throw new Error(`${res.status} ${res.statusText} ${errorMessage ? '- ' + errorMessage.message : ''}`)
       }
       const page = await res.json()
       for (const upload of page) {
