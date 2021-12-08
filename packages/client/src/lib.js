@@ -29,8 +29,8 @@ import {
 } from './platform.js'
 
 const MAX_PUT_RETRIES = 5
-const MAX_CONCURRENT_UPLOADS = 10
-const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
+const MAX_CONCURRENT_UPLOADS = 5
+const MAX_CHUNK_SIZE = 1024 * 1024 * 30 // chunk to ~30MB CARs
 
 /** @typedef { import('./lib/interface.js').API } API */
 /** @typedef { import('./lib/interface.js').Status} Status */
@@ -60,7 +60,7 @@ class Web3Storage {
    *
    * @param {{token: string, endpoint?:URL}} options
    */
-  constructor ({ token, endpoint = new URL('https://api.web3.storage') }) {
+  constructor({ token, endpoint = new URL('https://api.web3.storage') }) {
     /**
      * Authorization token.
      *
@@ -79,7 +79,7 @@ class Web3Storage {
    * @param {string} token
    * @returns {Record<string, string>}
    */
-  static headers (token) {
+  static headers(token) {
     if (!token) throw new Error('missing token')
     return {
       Authorization: `Bearer ${token}`,
@@ -93,7 +93,7 @@ class Web3Storage {
    * @param {PutOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async put ({ endpoint, token }, files, {
+  static async put({ endpoint, token }, files, {
     onRootCidReady,
     onStoredChunk,
     maxRetries = MAX_PUT_RETRIES,
@@ -126,7 +126,7 @@ class Web3Storage {
    * @param {PutCarOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async putCar ({ endpoint, token }, car, {
+  static async putCar({ endpoint, token }, car, {
     name,
     onStoredChunk,
     maxRetries = MAX_PUT_RETRIES,
@@ -196,7 +196,7 @@ class Web3Storage {
    * @param {CIDString} cid
    * @returns {Promise<Web3Response | null>}
    */
-  static async get ({ endpoint, token }, cid) {
+  static async get({ endpoint, token }, cid) {
     const url = new URL(`car/${cid}`, endpoint)
     const res = await fetch(url.toString(), {
       method: 'GET',
@@ -211,7 +211,7 @@ class Web3Storage {
    * @returns {Promise<CIDString>}
    */
   /* c8 ignore next 4 */
-  static async delete ({ endpoint, token }, cid) {
+  static async delete({ endpoint, token }, cid) {
     console.log('Not deleting', cid, endpoint, token)
     throw Error('.delete not implemented yet')
   }
@@ -221,7 +221,7 @@ class Web3Storage {
    * @param {CIDString} cid
    * @returns {Promise<Status | undefined>}
    */
-  static async status ({ endpoint, token }, cid) {
+  static async status({ endpoint, token }, cid) {
     const url = new URL(`status/${cid}`, endpoint)
     const res = await fetch(url.toString(), {
       method: 'GET',
@@ -243,13 +243,13 @@ class Web3Storage {
    * @param {number} [opts.maxResults] maximum number of results to return
    * @returns {AsyncIterable<Upload>}
    */
-  static async * list (service, { before = new Date().toISOString(), maxResults = Infinity } = {}) {
+  static async * list(service, { before = new Date().toISOString(), maxResults = Infinity } = {}) {
     /**
      * @param {Service} service
      * @param {{before: string, size: number}} opts
      * @returns {Promise<Response>}
      */
-    function listPage ({ endpoint, token }, { before, size }) {
+    function listPage({ endpoint, token }, { before, size }) {
       const search = new URLSearchParams({ before, size: size.toString() })
       const url = new URL(`user/uploads?${search}`, endpoint)
       return fetch(url.toString(), {
@@ -295,7 +295,7 @@ class Web3Storage {
    * @param {Iterable<Filelike>} files
    * @param {PutOptions} [options]
    */
-  put (files, options) {
+  put(files, options) {
     return Web3Storage.put(this, files, options)
   }
 
@@ -340,7 +340,7 @@ class Web3Storage {
    * @param {import('@ipld/car/api').CarReader} car
    * @param {PutCarOptions} [options]
    */
-  putCar (car, options) {
+  putCar(car, options) {
     return Web3Storage.putCar(this, car, options)
   }
 
@@ -348,7 +348,7 @@ class Web3Storage {
    * Fetch the Content Addressed Archive by its root CID.
    * @param {CIDString} cid
    */
-  get (cid) {
+  get(cid) {
     return Web3Storage.get(this, cid)
   }
 
@@ -356,7 +356,7 @@ class Web3Storage {
    * @param {CIDString} cid
    */
   /* c8 ignore next 3 */
-  delete (cid) {
+  delete(cid) {
     return Web3Storage.delete(this, cid)
   }
 
@@ -364,7 +364,7 @@ class Web3Storage {
    * Fetch info on Filecoin deals and IPFS pins that a given CID is replicated in.
    * @param {CIDString} cid
    */
-  status (cid) {
+  status(cid) {
     return Web3Storage.status(this, cid)
   }
 
@@ -384,7 +384,7 @@ class Web3Storage {
    * @param {number} [opts.maxResults] maximum number of results to return
    * @returns {AsyncIterable<Upload>}
    */
-  list (opts) {
+  list(opts) {
     return Web3Storage.list(this, opts)
   }
 }
@@ -394,7 +394,7 @@ class Web3Storage {
  * @param {UnixFSEntry} entry
  * @returns {Promise<Web3File>}
  */
-async function toWeb3File ({ content, path, cid }) {
+async function toWeb3File({ content, path, cid }) {
   const chunks = []
   for await (const chunk of content()) {
     chunks.push(chunk)
@@ -411,7 +411,7 @@ async function toWeb3File ({ content, path, cid }) {
  * @param {string} unixFsPath
  * @returns {string}
  */
-function toFilenameWithPath (unixFsPath) {
+function toFilenameWithPath(unixFsPath) {
   const slashIndex = unixFsPath.indexOf('/')
   return slashIndex === -1 ? unixFsPath : unixFsPath.substring(slashIndex + 1)
 }
@@ -421,9 +421,9 @@ function toFilenameWithPath (unixFsPath) {
  * @param {Response} res
  * @returns {Web3Response}
  */
-function toWeb3Response (res) {
+function toWeb3Response(res) {
   const response = Object.assign(res, {
-    unixFsIterator: async function * () {
+    unixFsIterator: async function* () {
       if (!res.ok) {
         throw new Error(`Response was not ok: ${res.status} ${res.statusText} - Check for { "ok": false } on the Response object before calling .unixFsIterator`)
       }
@@ -466,7 +466,7 @@ function toWeb3Response (res) {
  * @param {Service} service
  * @param {{}} opts
  */
-async function * paginator (fn, service, opts) {
+async function* paginator(fn, service, opts) {
   let res = await fn(service, opts)
   yield res
   let link = parseLink(res.headers.get('Link') || '')
